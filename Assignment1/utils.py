@@ -32,8 +32,7 @@ def shuffle(x, y):
     return x[idxs], y[idxs]
 
 def one_hot_vectorize(categorical_y):
-    n_classes = np.max(categorical_y)
-    y = np.zeros((len(categorical_y), n_classes))
+    y = np.zeros((len(categorical_y), 10))
     y[np.arange(0, len(categorical_y)), categorical_y] = 1
     return y
 
