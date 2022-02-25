@@ -15,7 +15,6 @@ class Categorical_CE:
         y_hat = np.clip(y_hat, 1e-15, 1 - 1e-15)
         y_hat_wrt_true = np.multiply(y_hat, y_true)
         y_hat_wrt_true_vec = -1/np.sum(y_hat_wrt_true, axis=1, keepdims=True)
-        #return np.multiply(y_hat_wrt_true_vec, y_true)
         return y_hat_wrt_true_vec
 
 class MSE:

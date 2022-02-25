@@ -24,7 +24,9 @@ class SGDMomentum:
 
     def step(self, weight, grad_w, i, *args):
         u = self.lr * grad_w
-        i = self.n_layer_weights -1-i
+
+        i = self.n_layer_weights -1-i # Update/history list contains latest weights in reverse order due to backprop
+
         if len(self.update) != self.n_layer_weights:
             # Same as initializing update to 0
             self.update.append(u)
@@ -50,12 +52,12 @@ class NAG:
         if len(self.update) != self.n_layer_weights:
             return 0
         else:
-            i = self.n_layer_weights -1-i
+            i = self.n_layer_weights -1-i # Update/history list contains latest weights in reverse order due to backprop
             return self.mu*self.update[i]
 
     def step(self, weight, grad_w_lookahead, i):
         u = self.lr * grad_w_lookahead
-        i = self.n_layer_weights -1-i
+        i = self.n_layer_weights -1-i # Update/history list contains latest weights in reverse order due to backprop
         if len(self.update) != self.n_layer_weights:
             self.update.append(u)
         else:
@@ -82,7 +84,7 @@ class RMSProp:
         if len(self.history) != self.n_layer_weights:
             # Same as initializing history to 0
             self.history.append(h)
-            i = self.n_layer_weights -1-i
+            i = self.n_layer_weights -1-i # Update/history list contains latest weights in reverse order due to backprop
         else:
             self.history[i] = self.beta * self.history[i] + h
 
@@ -120,15 +122,15 @@ class Adam:
             # Same as initializing update and history to 0
             self.update.append(u)
             self.history.append(h)
-            i = self.n_layer_weights -1-i
+            i = self.n_layer_weights -1-i # Update/history list contains latest weights in reverse order due to backprop
         else:
             self.update[i] = self.beta1 * self.update[i] + u
             self.history[i] = self.beta2 * self.history[i] + h
 
         update_hat = self.update[i]/(1 - np.power(self.beta1, self.t))
         history_hat = self.history[i]/(1 - np.power(self.beta2, self.t))
-
         per_weight_hist = np.sqrt(history_hat + self.epsilon)
+        
         # Updating layer weights
         weight -= self.lr * (np.divide(update_hat, per_weight_hist) + self.lamda * grad_w)
 
@@ -163,14 +165,16 @@ class Nadam:
             # Same as initializing update and history to 0
             self.update.append(u)
             self.history.append(h)
-            i = self.n_layer_weights -1-i
+            # Update/history list contains latest weights in reverse order due to backprop
         else:
             self.update[i] = self.beta1 * self.update[i] + u
             self.history[i] = self.beta2 * self.history[i] + h
         
+        # Momentum update
         update_hat = self.update[i]/(1 - self.beta1**self.t)
         nag_update_hat = (self.beta1 * update_hat) + (u/(1 - self.beta1**self.t))
         
+        # Gradient frequency (or grad_w^2) update
         history_hat = self.history[i]/(1 - self.beta2**self.t)
         per_weight_hist = np.sqrt(history_hat + self.epsilon)
         

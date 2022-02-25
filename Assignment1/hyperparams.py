@@ -80,6 +80,7 @@ random_sweep_config = {
     }
 }
 
+# default config for wandb
 default_config = {
     "activation" : 'sigmoid',
     "batch_size" : 16,
