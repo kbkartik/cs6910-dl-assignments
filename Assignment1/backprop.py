@@ -11,7 +11,7 @@ class Backprop:
         n_layer_weights = len(network)
         
         accum_grad = self.loss_fn.gradient(layer_wise_output[-1], y_true)
-        if self.optimizer.type_ == 'adam':
+        if self.optimizer.type_ == 'adam' or self.optimizer.type_ == 'nadam':
             self.optimizer.t += 1
         
         for i in range(n_layer_weights)[::-1]:

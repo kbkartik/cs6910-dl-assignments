@@ -18,8 +18,7 @@ def standardize(x):
         if std[col]:
             X_std[:, col] = (X_std[:, col] - mean[col]) / std[col]
 
-    return np.sum(x - X_std)
-    #return x
+    return x
 
 def normalize(X, axis=-1, order=2):
     l2 = np.atleast_1d(np.linalg.norm(X, order, axis))
@@ -35,7 +34,16 @@ def one_hot_vectorize(categorical_y):
     y = np.zeros((len(categorical_y), 10))
     y[np.arange(0, len(categorical_y)), categorical_y] = 1
     return y
-
+    
+def train_val_split(n_training_datapoints, x, y):
+    
+    x_val = x[int(0.9*n_training_datapoints):, :]
+    y_val = y[int(0.9*n_training_datapoints):]
+    x_train = x[:int(0.9*n_training_datapoints), :]
+    y_train = y[:int(0.9*n_training_datapoints)]
+    
+    return x_train, y_train, x_val, y_val
+    
 def preprocess(x_train, x_test, y_train, y_test, preprocess_type='normalize'):
 
     n_training_datapoints = x_train.shape[0]
@@ -59,8 +67,11 @@ def preprocess(x_train, x_test, y_train, y_test, preprocess_type='normalize'):
         x_test = img_standardize(x_test)
 
     x_train, y_train = shuffle(x_train, y_train)
-    x_test, y_test = shuffle(x_test, y_test)
+    x_train, y_train, x_val, y_val = train_val_split(n_training_datapoints, x_train, y_train)
+    #x_test, y_test = shuffle(x_test, y_test)
 
     y_train = one_hot_vectorize(y_train)
+    y_val = one_hot_vectorize(y_val)
+    y_test = one_hot_vectorize(y_test)
 
-    return x_train, x_test, y_train, y_test
+    return x_train, y_train, x_val, y_val, x_test, y_test

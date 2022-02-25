@@ -35,7 +35,6 @@ class Sigmoid:
 class Tanh:
 
     # Numerically stable tanh
-
     def _positive_tanh(self, x):
         t = np.exp(-2*x)
         return (1-t)/(1+t)
@@ -67,14 +66,15 @@ class Tanh:
 class ReLU:
 
     def __call__(self, x):
-        return np.where(x >= 0, x, 0)
+        return np.where(x > 0, x, 0)
         
     def gradient(self, x):
-        return np.where(x >= 0, 1, 0)
+        return np.where(x > 0, 1, 0)
 
 class Softmax:
 
     def __call__(self, x):
+        #x = np.nan_to_num(x, copy=True, posinf=1e3, neginf=1e-3)
         exp_x = np.exp(x - np.max(x, axis=1, keepdims=True))
         return exp_x/np.sum(exp_x, axis=1, keepdims=True)
 
