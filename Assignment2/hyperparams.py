@@ -45,3 +45,33 @@ default_config = {
     "activation" : 'relu',
     "data_aug" : True,
 }
+
+# partb grid config for wandb
+partb_config = {
+    "name" : "PartB",
+    "method" : "grid",
+    "metric" : {
+        "name" : "val_acc",
+        "goal" : "maximize",
+    },
+    "parameters" : {
+        "model_name" : {
+            "values" : [['RN50', (224, 224)], 
+                        ['IV3', (299, 299)], 
+                        ['MV3S', (224, 224)]]
+        },
+        "strategy" : {
+            "values" : ['finetuning', 'feature_extraction']
+        },
+        "data_aug" : {
+            "values" : [True, False]
+        },
+    }
+}
+
+# part B default config for wandb
+partb_default_config = {
+    "model_name" : ['RN50', (224, 224)],
+    "strategy" : 'feature_extraction',
+    "data_aug" : False,
+}
