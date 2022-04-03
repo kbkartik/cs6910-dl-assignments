@@ -1,16 +1,22 @@
 class Agent:
 
-    def __init__(self, model, utils_agent, num_epochs):
+    def __init__(self, model, utils_agent, num_epochs, is_inception=False):
         self.model = model
         self.utils_agent = utils_agent
         self.num_epochs = num_epochs
-        self.optimizer = optim.Adam(self.model.parameters(), lr=0.0002)
+        self.is_inception = is_inception
+
+        params_to_update = []
+        for name, param in model.named_parameters():
+            if param.requires_grad == True:
+                params_to_update.append(param)
+        self.optimizer = optim.Adam(params_to_update, lr=0.0001)
+        
         self.loss_fn = nn.CrossEntropyLoss()
 
     def train(self,):
-        
+        self.model.train()
         for ep in range(self.num_epochs):
-
             running_train_loss = 0.0
             for i, data in enumerate(self.utils_agent.trainloader):
                 images, targets = data
@@ -18,8 +24,15 @@ class Agent:
                 targets = targets.to(device)
                 
                 self.optimizer.zero_grad()
-                pred_probs = self.model(images)
-                loss = self.loss_fn(pred_probs, targets)
+                if self.is_inception:
+                    outputs, aux_outputs = self.model(images)
+                    loss1 = self.loss_fn(outputs, targets)
+                    loss2 = self.loss_fn(aux_outputs, targets)
+                    loss = loss1 + 0.4*loss2
+                else:
+                    pred_probs = self.model(images)
+                    loss = self.loss_fn(pred_probs, targets)
+
                 loss.backward()
                 self.optimizer.step()
 
@@ -49,8 +62,11 @@ class Agent:
                 loss = self.loss_fn(pred_probs, targets)
 
                 total_loss += loss.item()
-                n_correct_preds += torch.sum(pred_labels == targets)
+                targets_labels = targets.argmax(1)
+                n_correct_preds += torch.sum(pred_labels == targets_labels)
             
             accuracy = n_correct_preds/len(dataloader.dataset)*100
+        
+        self.model.train()
 
         return total_loss, accuracy
