@@ -39,7 +39,7 @@ class Agent:
                 running_train_loss += loss.item()
                 if (i+1) % len(self.utils_agent.trainloader) == 0:
                     val_loss, val_acc = self.evaluate()
-                    wandb.log({'train_loss': running_train_loss, 'val_loss': val_loss})
+                    #wandb.log({'train_loss': running_train_loss, 'val_loss': val_loss})
                     running_train_loss = 0
         
         return val_acc
@@ -52,8 +52,8 @@ class Agent:
             n_correct_preds = 0
             dataloader = self.utils_agent.valloader if not test_data else self.utils_agent.testloader
 
-            for j, data in enumerate(dataloader):
-                images, targets = data
+            for indices, batch_data in enumerate(dataloader):
+                images, targets = batch_data
                 images = images.to(device)
                 targets = targets.to(device)
 
@@ -66,7 +66,10 @@ class Agent:
                 n_correct_preds += torch.sum(pred_labels == targets_labels)
             
             accuracy = n_correct_preds/len(dataloader.dataset)*100
-        
+
+        if test_data:
+            self.utils_agent.plot_predictions(images, targets_labels, pred_probs)
+
         self.model.train()
 
         return total_loss, accuracy

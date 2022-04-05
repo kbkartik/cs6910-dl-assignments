@@ -5,6 +5,7 @@ class CNN(nn.Module):
         
         N_LAYERS = 5
         N_CLASSES = 10
+        self.img_dims = img_dims
         rand_image = torch.rand(img_dims, device=device)
         n_conv_filters = lambda x: int(HYPERPARAMS['conv_filter_org'] * x)
 

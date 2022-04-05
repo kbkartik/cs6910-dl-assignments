@@ -34,14 +34,62 @@ bayes_config = {
     }
 }
 
-# default config for wandb
-default_config = {
+# default config for wandb for instance 1
+default_config_instance1 = {
     "n_filters" : 32,
     "conv_filter_org" : 1,
     "batch_norm" : True,
     "conv_filter_size": 3,
     "n_mlp_neurons": 256,
     "dropout" : 0.2,
+    "activation" : 'relu',
+    "data_aug" : True,
+}
+
+# bayes config for wandb
+bayes_config = {
+    "name" : "PartA_instance2",
+    "method" : "bayes",
+    "metric" : {
+        "name" : "val_acc",
+        "goal" : "maximize",
+    },
+    "parameters" : {
+        "n_filters" : {
+            "values" : [64]
+        },
+        "conv_filter_org" : {
+            "values" : [2]
+        },
+        "batch_norm" : {
+            "values" : [True]
+        },
+        "conv_filter_size": {
+            "values" : [3, 5]
+        },
+        "n_mlp_neurons": {
+            "values" : [128, 256]
+        },
+        "dropout" : {
+            "values" : [0, 0.4, 0.6]
+        },
+        "activation" : {
+            "values" : ['relu', 'tanh']
+        },
+        "data_aug" : {
+            "values" : [True, False]
+        },
+    }
+}
+
+# default config for wandb
+default_config_instance2 = {
+    "n_filters" : 64,
+    "conv_filter_org" : 2,
+    "batch_norm" : True,
+    "conv_filter_size": 5,
+    "n_mlp_neurons": 128,
+    "dropout" : 0,
     "activation" : 'relu',
     "data_aug" : True,
 }
