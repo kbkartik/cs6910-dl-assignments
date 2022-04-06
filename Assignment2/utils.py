@@ -108,7 +108,8 @@ class Utils:
         column_names = ["image", "truth", "guess"]
         predictions_table = wandb.Table(columns=column_names)
 
-        invTransf = T.Compose([T.Normalize(mean = [ 0., 0., 0. ], 
+        # Unnormalizing image tensor
+        self.invTransf = T.Compose([T.Normalize(mean = [ 0., 0., 0. ], 
                                                 std = 1/self.dataset_stds), 
                                     T.Normalize(mean = -1*self.dataset_means, 
                                                 std = [ 1., 1., 1. ]),
@@ -116,6 +117,16 @@ class Utils:
         cls_names = {y:x for x, y in self.test_data.class_to_idx.items()}
         i = 0
         for i in range(10):
-            row = [wandb.Image(invTransf(imgs[i])), cls_names[targets[i].item()], predictions[i]]
+            row = [wandb.Image(self.invTransf(imgs[i])), cls_names[targets[i].item()], predictions[i]]
             predictions_table.add_data(*row)
         wandb.run.log({"Predictions_Table": predictions_table})
+
+    def get_rand_image(self, dataloader_type='train'):
+        dataloader_dict = {'train': next(iter(self.trainloader)),
+                           'val': next(iter(self.valloader)),
+                           'test': next(iter(self.testloader))}
+        
+        data = dataloader_dict[dataloader_type]
+        rand_int = torch.randint(data[0].shape[0], size=(1,)).item()
+        
+        return (data[0][rand_int], data[1][rand_int])

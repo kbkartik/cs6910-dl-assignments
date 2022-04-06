@@ -1,5 +1,5 @@
 # bayes config for wandb
-bayes_config = {
+bayes_config_instance1 = {
     "name" : "PartA_instance1",
     "method" : "bayes",
     "metric" : {
@@ -47,7 +47,7 @@ default_config_instance1 = {
 }
 
 # bayes config for wandb
-bayes_config = {
+bayes_config_instance2 = {
     "name" : "PartA_instance2",
     "method" : "bayes",
     "metric" : {
@@ -92,6 +92,18 @@ default_config_instance2 = {
     "dropout" : 0,
     "activation" : 'relu',
     "data_aug" : True,
+}
+
+# Part A best config
+part_a_best_config = {
+    "n_filters" : 64,
+    "conv_filter_org" : 2,
+    "batch_norm" : True,
+    "conv_filter_size": 3,
+    "n_mlp_neurons": 128,
+    "dropout" : 0,
+    "activation" : 'relu',
+    "data_aug" : False,
 }
 
 # partb grid config for wandb
