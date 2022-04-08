@@ -1,3 +1,13 @@
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+import numpy as np
+import random
+
+SEED = 123
+device = torch.device("cuda")
+
 class CNN(nn.Module):
 
     def __init__(self, img_dims, HYPERPARAMS):

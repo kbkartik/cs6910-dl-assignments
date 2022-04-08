@@ -1,3 +1,15 @@
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import torchvision.transforms as T
+import wandb
+
+import numpy as np
+import random
+
+SEED = 123
+device = torch.device("cuda")
+
 class Agent:
 
     def __init__(self, model, utils_agent, num_epochs, is_inception=False):
@@ -18,8 +30,8 @@ class Agent:
         self.model.train()
         for ep in range(self.num_epochs):
             running_train_loss = 0.0
-            for i, data in enumerate(self.utils_agent.trainloader):
-                images, targets = data
+            for i, batch_data in enumerate(self.utils_agent.trainloader):
+                images, targets = batch_data
                 images = images.to(device)
                 targets = targets.to(device)
                 
@@ -39,7 +51,7 @@ class Agent:
                 running_train_loss += loss.item()
                 if (i+1) % len(self.utils_agent.trainloader) == 0:
                     val_loss, val_acc = self.evaluate()
-                    #wandb.log({'train_loss': running_train_loss, 'val_loss': val_loss})
+                    wandb.log({'train_loss': running_train_loss, 'val_loss': val_loss})
                     running_train_loss = 0
         
         return val_acc

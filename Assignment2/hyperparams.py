@@ -95,7 +95,39 @@ default_config_instance2 = {
 }
 
 # Part A best config
-part_a_best_config = {
+part_A_best_config = {
+    "name" : "PartA_best",
+    "method" : "grid",
+    "parameters" : {
+        "n_filters" : {
+            "values" : [64]
+        },
+        "conv_filter_org" : {
+            "values" : [2]
+        },
+        "batch_norm" : {
+            "values" : [True]
+        },
+        "conv_filter_size": {
+            "values" : [3]
+        },
+        "n_mlp_neurons": {
+            "values" : [128]
+        },
+        "dropout" : {
+            "values" : [0]
+        },
+        "activation" : {
+            "values" : ['relu']
+        },
+        "data_aug" : {
+            "values" : [False]
+        },
+    }
+}
+
+# default best config PartA
+default_best_config_part_a = {
     "n_filters" : 64,
     "conv_filter_org" : 2,
     "batch_norm" : True,
