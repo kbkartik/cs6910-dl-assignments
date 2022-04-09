@@ -44,7 +44,7 @@ class Utils:
         self.valloader = data.DataLoader(self.val_data, batch_size=batch_size, shuffle=False, num_workers=2, pin_memory=True)
 
         self.test_data = ImageFolder(root=test_path, transform=T.Compose([T.Resize(img_dims), T.ToTensor(), normalize]), target_transform=target_data_transform)
-        self.testloader = data.DataLoader(self.test_data, batch_size=batch_size, shuffle=False, num_workers=2, pin_memory=True)
+        self.testloader = data.DataLoader(self.test_data, batch_size=batch_size, shuffle=True, num_workers=2, pin_memory=True)
 
     def get_dataset_means_std(self, img_dims, dataset):
 
