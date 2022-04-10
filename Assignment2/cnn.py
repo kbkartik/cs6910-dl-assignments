@@ -6,7 +6,8 @@ import numpy as np
 import random
 
 SEED = 123
-device = torch.device("cuda")
+# if gpu is to be used
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class CNN(nn.Module):
 

@@ -12,7 +12,8 @@ import random
 from PIL import Image
 
 SEED = 123
-device = torch.device("cuda")
+# if gpu is to be used
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class Utils:
 

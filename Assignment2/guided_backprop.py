@@ -7,6 +7,9 @@ import numpy as np
 import random
 from PIL import Image
 
+# if gpu is to be used
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 # Adapted from https://leslietj.github.io/2020/07/22/Deep-Learning-Guided-BackPropagation/
 
 class Guided_backprop:
