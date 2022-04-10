@@ -56,7 +56,7 @@ class Agent:
         
         return val_acc
 
-    def evaluate(self, test_data=False):
+    def evaluate(self, test_data=False, part_a=True):
 
         self.model.eval()
         with torch.no_grad():
@@ -79,7 +79,7 @@ class Agent:
             
             accuracy = n_correct_preds/len(dataloader.dataset)*100
 
-        if test_data:
+        if test_data and part_a:
             self.utils_agent.plot_predictions(images, targets_labels, pred_probs)
 
         self.model.train()

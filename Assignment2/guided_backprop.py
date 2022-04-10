@@ -78,7 +78,12 @@ class Guided_backprop:
         input_image = input_image.squeeze(0)
         result = self.image_reconstruction.data[0].permute(1,2,0)
         result = normalize(result)
-        gbp_result = wandb.Image(result.cpu().numpy(), caption='Guided BP Image')
-        orig_img = wandb.Image(self.utils_agent.invTransf(input_image).cpu(), caption='Original Image')
 
-        wandb.log({'Orig_img': orig_img, 'GBP_Result': gbp_result})
+        # Error is here. Result shape is torch.size([1, 64, 128, 128]) same as Conv1 feature map
+        # However result should be of the shape torch.size([1, 3, 128, 128]).
+        # This is due to final gradient backprop not being done on the input image.
+        # Figured out the why but not the where of the error.
+        print("Guided backprop image size:", result.shape)
+        #gbp_result = wandb.Image(result.cpu().numpy(), caption='Guided BP Image')
+        #orig_img = wandb.Image(self.utils_agent.invTransf(input_image).cpu(), caption='Original Image')
+        #wandb.log({'Orig_img': orig_img, 'GBP_Result': gbp_result})
