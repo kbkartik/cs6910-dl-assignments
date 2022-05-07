@@ -20,10 +20,13 @@ class Transliteration:
         
     def fetch_dataset(self, tgt_lang):
 
-        raw_dataset = {}
+        raw_dataset = {'train':{},
+                       'val': {},
+                       'test': {},
+                       }
 
         # Read train, val, test set from the dataset files
-        for dataset_type in ['train', 'val', 'test']:
+        for dataset_type in ['train', 'dev', 'test']:
             # Path to read data from
             dataset_path = os.path.join("/content/dakshina_dataset_v1.0/", tgt_lang, "lexicons", tgt_lang + ".translit.sampled." + dataset_type + ".tsv")
 
@@ -31,7 +34,9 @@ class Transliteration:
                 lines = f.read().split("\n")
 
             src_wordlist, tgt_wordlist = [], []
-
+            if dataset_type == 'dev':
+                dataset_type = 'val'
+            
             for line in lines:
 
                 # Skip lines that do not meet the expected format
@@ -39,7 +44,7 @@ class Transliteration:
                     continue
 
                 # Get the input and target word
-                src_wd, tgt_wd, _ = line.split("\t")
+                tgt_wd, src_wd, _ = line.split("\t")
 
                 # Add start and end token to the target word
                 tgt_wd = "\t" + tgt_wd + "\n"
@@ -80,7 +85,7 @@ class Transliteration:
         # Saving the tokenizers and vocab lengths
         self.dataset_configs["src_vocab_size"] = len(src_lang_tokenizer.word_index) + 1
         self.dataset_configs["tgt_vocab_size"] = len(tgt_lang_tokenizer.word_index) + 1
-        #self.dataset_configs["src_lang_tokenizer"] = src_lang_tokenizer
+        self.dataset_configs["src_lang_tokenizer"] = src_lang_tokenizer
         self.dataset_configs["tgt_lang_tokenizer"] = tgt_lang_tokenizer
 
         # Transforms each text in texts to a sequence of integers.
@@ -114,11 +119,11 @@ class Transliteration:
         val_ds = (val_ds.repeat().shuffle(self.dataset_configs["n_val_egs"]).batch(self.HYPERPARAMS['batch_size'], drop_remainder=True))
 
         # Creating a tensor with validation data for evaluation in the training loop
-        val_X = src_lang_tokenizer.texts_to_sequences(list(self.dataset_configs["updated_val_tgts"].keys()))
+        val_X = self.dataset_configs["src_lang_tokenizer"].texts_to_sequences(list(self.dataset_configs["updated_val_tgts"].keys()))
         val_X = pad_sequences(val_X, padding="post", maxlen=train_inputs.shape[1])
 
         # Creating a tensor with test data for final evaluation
-        test_X = src_lang_tokenizer.texts_to_sequences(list(self.dataset_configs["updated_test_tgts"].keys()))
+        test_X = self.dataset_configs["src_lang_tokenizer"].texts_to_sequences(list(self.dataset_configs["updated_test_tgts"].keys()))
         test_X = pad_sequences(test_X, padding="post", maxlen=train_inputs.shape[1])
 
         return (train_ds, (val_ds, val_X), test_X)
